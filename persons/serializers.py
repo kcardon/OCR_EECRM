@@ -1,8 +1,13 @@
-from .models import Client, Employee
+from .models import Client, Employee, Group
 from rest_framework.serializers import Serializer, ModelSerializer, CharField,ValidationError
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 
+
+class GroupSerializer(ModelSerializer):
+    class Meta:
+        model=Group
+        fields = '__all__'
 
 class ClientSerializer(ModelSerializer):
     class Meta:
