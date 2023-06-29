@@ -19,10 +19,12 @@ from django.urls import path, include
 from rest_framework import routers
 from contracts.views import ContractsAPIView, ContractsStatusAPIView
 from persons.views import EmployeeAPIView, EmployeeSignupAPIView, EmployeeLoginAPIView, GroupAPIView, ClientAPIView
+from events.views import EventAPIView, EventStatusAPIView
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("login/", EmployeeLoginAPIView.as_view(), name = "login"),
+    path("login/", TokenObtainPairView.as_view(), name = "login"),
     
 ]
 
@@ -36,11 +38,11 @@ router_root.register("groups", GroupAPIView, basename= "groups" )
 router_root.register("clients", ClientAPIView, basename = "clients")
 router_root.register("contracts_status", ContractsStatusAPIView, basename = "contracts_status")
 router_root.register("contracts", ContractsAPIView, basename = "contracts")
+router_root.register("events", EventAPIView, basename="events")
+router_root.register("event_status", EventStatusAPIView, basename="event_status")
 urlpatterns += [path("", include(router_root.urls))]
 
 
 router_root = routers.DefaultRouter()
-
-router_root.register("contracts", ContractsAPIView, basename="contracts")
 
 urlpatterns += [path("", include(router_root.urls))]

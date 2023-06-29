@@ -15,6 +15,9 @@ class Employee(Person, User):
     group = models.ForeignKey(Group, on_delete=models.PROTECT)
 
 class Client(Person):
+    first_name = models.CharField(max_length=250)
+    last_name = models.CharField(max_length=250)
+    email = models.CharField(max_length=250)
     company_name = models.CharField(max_length=250)
     sales_contact = models.ForeignKey(Employee, on_delete=models.PROTECT)
 

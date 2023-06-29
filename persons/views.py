@@ -1,11 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .permisions import UserPermissions
+from .permisions import EmployeePermission
 
 from .models import Employee, Group, Client
 
@@ -13,18 +13,26 @@ from .serializers import EmployeeSerializer, EmployeeLoginSerializer, EmployeeSi
 # Create your views here.
 
 class GroupAPIView(ModelViewSet):
-    permission_classes = (UserPermissions,)
+    permission_classes = (IsAuthenticated,)
     serializer_class = GroupSerializer
-
+    def get_object(self):
+        obj = get_object_or_404(self.get_queryset(), pk=self.kwargs["pk"])
+        self.check_object_permissions(self.request, obj)
+        return obj
     def get_queryset(self):
         return Group.objects.all()
     
 class EmployeeAPIView(ModelViewSet):
     """return a list of app users"""
 
-    permission_classes = (UserPermissions,)
+    permission_classes = (IsAuthenticated,)
     serializer_class = EmployeeSerializer
 
+    def get_object(self):
+        obj = get_object_or_404(self.get_queryset(), pk=self.kwargs["pk"])
+        self.check_object_permissions(self.request, obj)
+        return obj
+    
     def get_queryset(self):
         return Employee.objects.all()
     
@@ -40,7 +48,11 @@ class EmployeeSignupAPIView(ModelViewSet):
     def post(self, request):
         serializer = EmployeeSignUpSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            group_id = serializer.validated_data.get('group')
+            group = get_object_or_404(Group, id=group_id)
+            employee = Employee.objects.create(group=group, **serializer.validated_data)
+            employee.groups.add(group)
+            employee.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -49,7 +61,8 @@ class EmployeeLoginAPIView(TokenObtainPairView):
 
     serializer_class = EmployeeLoginSerializer
     permission_classes = (AllowAny,)
-
+    
+    
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -71,6 +84,9 @@ class EmployeeLoginAPIView(TokenObtainPairView):
 class ClientAPIView(ModelViewSet):
     serializer_class = ClientSerializer
     permission_classes = (AllowAny,)
-
+    def get_object(self):
+        obj = get_object_or_404(self.get_queryset(), pk=self.kwargs["pk"])
+        self.check_object_permissions(self.request, obj)
+        return obj
     def get_queryset(self):
         return Client.objects.all()
