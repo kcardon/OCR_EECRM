@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .permisions import EmployeePermission
+from .permisions import EmployeePermission, ClientPermission
 
 from .models import Employee, Group, Client
 
@@ -48,11 +48,7 @@ class EmployeeSignupAPIView(ModelViewSet):
     def post(self, request):
         serializer = EmployeeSignUpSerializer(data=request.data)
         if serializer.is_valid():
-            group_id = serializer.validated_data.get('group')
-            group = get_object_or_404(Group, id=group_id)
-            employee = Employee.objects.create(group=group, **serializer.validated_data)
-            employee.groups.add(group)
-            employee.save()
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -62,17 +58,15 @@ class EmployeeLoginAPIView(TokenObtainPairView):
     serializer_class = EmployeeLoginSerializer
     permission_classes = (AllowAny,)
     
-    
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data["user"]
-
             jwt_serializer = TokenObtainPairSerializer()
             token = jwt_serializer.get_token(user)
             return Response(
                 {
-                    "email": user.email,
+                    "username": user.username,
                     "access": str(token.access_token),
                     "refresh": str(token),
                 },
@@ -83,7 +77,7 @@ class EmployeeLoginAPIView(TokenObtainPairView):
 
 class ClientAPIView(ModelViewSet):
     serializer_class = ClientSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (ClientPermission,)
     def get_object(self):
         obj = get_object_or_404(self.get_queryset(), pk=self.kwargs["pk"])
         self.check_object_permissions(self.request, obj)

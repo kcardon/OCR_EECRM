@@ -24,7 +24,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("login/", TokenObtainPairView.as_view(), name = "login"),
+    path("login/", EmployeeLoginAPIView.as_view(), name = "login"),
     
 ]
 

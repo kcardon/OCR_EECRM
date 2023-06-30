@@ -11,8 +11,8 @@ class Person(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
     
 
-class Employee(Person, User):
-    group = models.ForeignKey(Group, on_delete=models.PROTECT)
+class Employee(User, Person):
+    pass
 
 class Client(Person):
     first_name = models.CharField(max_length=250)
