@@ -1,7 +1,7 @@
 from rest_framework.permissions import BasePermission
 from rest_framework.permissions import SAFE_METHODS
 
-from .models import Event
+from events.models import Event
 from contracts.models import Contract
 
 

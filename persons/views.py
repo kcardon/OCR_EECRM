@@ -74,12 +74,12 @@ class EmployeeLoginAPIView(TokenObtainPairView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            user = serializer.validated_data["user"]
+            employee = serializer.validated_data["employee"]
             jwt_serializer = TokenObtainPairSerializer()
-            token = jwt_serializer.get_token(user)
+            token = jwt_serializer.get_token(employee)
             return Response(
                 {
-                    "username": user.username,
+                    "username": employee.username,
                     "access": str(token.access_token),
                     "refresh": str(token),
                 },
