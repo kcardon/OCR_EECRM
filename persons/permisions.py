@@ -1,7 +1,7 @@
 from rest_framework.permissions import BasePermission
 from rest_framework.permissions import SAFE_METHODS
-from contracts.models import Contract
 from events.models import Event
+from persons.models import Client
 
 
 class EmployeePermission(BasePermission):
@@ -43,9 +43,7 @@ class ClientPermission(BasePermission):
             return True
         elif self.get_user_group(request) == "Sales":
             # On récupère la liste des clients attribués à ce vendeur depuis la liste des contrats qu'il gère
-            clients = Contract.objects.filter(sales_contact=request.user).values_list(
-                "client", flat=True
-            )
+            clients = Client.objects.filter(sales_contact=request.user)
             return obj in clients
         elif self.get_user_group(request) == "Support":
             # On récupère la liste des clients attribués au membre support depuis la liste des évènements qu'il gère

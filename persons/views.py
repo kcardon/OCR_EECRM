@@ -99,4 +99,11 @@ class ClientAPIView(ModelViewSet):
         return obj
 
     def get_queryset(self):
-        return Client.objects.all()
+        queryset = Client.objects.all()
+        name = self.request.GET.get("name")
+        if name is not None:
+            queryset = queryset.filter(last_name__icontains=name)
+        email = self.request.GET.get("email")
+        if email is not None:
+            queryset = queryset.filter(email__icontains=email)
+        return queryset

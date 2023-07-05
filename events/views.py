@@ -1,4 +1,6 @@
 from django.shortcuts import render, get_object_or_404
+from django.utils.dateparse import parse_date
+
 from rest_framework.viewsets import ModelViewSet
 from .serializers import EventSerializer, EventStatusSerializer
 from .models import Event, EventStatus
@@ -21,7 +23,31 @@ class EventAPIView(ModelViewSet):
         return obj
 
     def get_queryset(self):
-        return Event.objects.all()
+        contract_id = self.kwargs.get("contract_id")
+        if contract_id is not None:
+            queryset = Event.objects.filter(contract=contract_id)
+        else:
+            queryset = Event.objects.all()
+
+        client_name = self.request.GET.get("client_name")
+        if client_name is not None:
+            queryset = queryset.filter(client__last_name__icontains=client_name)
+
+        client_email = self.request.GET.get("client_email")
+        if client_email is not None:
+            queryset = queryset.filter(client__email__icontains=client_email)
+
+        date_before = self.request.GET.get("date_before")
+        if date_before is not None:
+            date_before = parse_date(date_before)
+            queryset = queryset.filter(event_date__lte=date_before)  # less or equal
+
+        date_after = self.request.GET.get("date_after")
+        if date_after is not None:
+            date_after = parse_date(date_after)
+            queryset = queryset.filter(event_date__gte=date_after)  # greater or equal
+
+        return queryset
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()

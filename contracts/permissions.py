@@ -12,20 +12,17 @@ class ContractPermission(BasePermission):
         return True
 
     def has_object_permission(self, request, view, obj):
-        return self.can_manage_event(request, obj)
+        return self.can_manage_contract(request, obj)
 
     def can_manage_contract(self, request, obj):
         group = self.get_user_group(request)
         if group == "Management":
             return True
         elif group == "Sales":
-            event_client = obj.client
-            contracts_clients = Contract.objects.filter(
-                sales_contact=request.user
-            ).values_list("client", flat=True)
+            contracts_clients = Contract.objects.filter(sales_contact=request.user)
             # La permission est donnée si le client associé à l'évènement fait partie
             # de la liste des clients des contrats attribués à l'utilisateur en cours
-            return event_client in contracts_clients
+            return obj in contracts_clients
         else:
             return False
 

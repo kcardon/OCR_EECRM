@@ -44,7 +44,20 @@ router_root.register("clients", ClientAPIView, basename="clients")
 router_root.register(
     "contracts_status", ContractsStatusAPIView, basename="contracts_status"
 )
+
 router_root.register("contracts", ContractsAPIView, basename="contracts")
 router_root.register("events", EventAPIView, basename="events")
 router_root.register("event_status", EventStatusAPIView, basename="event_status")
 urlpatterns += [path("", include(router_root.urls))]
+
+# Routes imbriquées
+router_root = routers.DefaultRouter()
+router_root.register("contracts", ContractsAPIView, basename="contracts")
+urlpatterns += [path("clients/<int:client_id>/", include(router_root.urls))]
+router_root = routers.DefaultRouter()
+router_root.register("events", EventAPIView, basename="events")
+urlpatterns += [
+    path(
+        "clients/<int:client_id>/contracts/<int:contract_id>", include(router_root.urls)
+    )
+]
