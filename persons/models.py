@@ -18,6 +18,9 @@ class CustomUser(Person, AbstractUser):
 
 
 class Employee(CustomUser):
+    def __str__(self):
+        return self.first_name + " " + self.last_name
+
     pass
 
 
@@ -27,3 +30,6 @@ class Client(Person):
     email = models.CharField(max_length=250)
     company_name = models.CharField(max_length=250)
     sales_contact = models.ForeignKey(Employee, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.first_name + " " + self.last_name

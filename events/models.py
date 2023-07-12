@@ -2,8 +2,12 @@ from django.db import models
 from persons.models import Client, Employee
 from contracts.models import Contract
 
+
 class EventStatus(models.Model):
     status = models.CharField(max_length=25)
+
+    def __str__(self):
+        return self.status
 
 
 class Event(models.Model):

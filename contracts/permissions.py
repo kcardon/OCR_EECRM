@@ -9,7 +9,10 @@ class ContractPermission(BasePermission):
     def has_permission(self, request, view):
         if request.method == "POST":
             return self.can_create_contract(request)
-        return True
+        if self.get_user_group(request) == "Support":
+            return False
+        else:
+            return True
 
     def has_object_permission(self, request, view, obj):
         return self.can_manage_contract(request, obj)
