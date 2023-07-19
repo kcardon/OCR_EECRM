@@ -21,6 +21,9 @@ class Contract(models.Model):
     amount = models.FloatField()
     payment_due = models.DateTimeField()
 
+    def __str__(self):
+        return self.client.company_name
+
 
 @receiver(post_save, sender=Contract)
 def update_client_status(sender, instance, **kwargs):

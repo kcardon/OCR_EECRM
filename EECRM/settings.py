@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
-
+import env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -83,16 +83,7 @@ AUTH_USER_MODEL = "persons.Employee"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "EECRM",
-        "USER": "postgres",
-        "PASSWORD": "ocrp12",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
-}
+DATABASES = env.DATABASES
 
 
 # Password validation

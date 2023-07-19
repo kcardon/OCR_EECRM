@@ -11,6 +11,7 @@ class ContractStatusAdmin(admin.ModelAdmin):
 class ContractAdmin(admin.ModelAdmin):
     list_display = (
         "client",
+        "sales_contact",
         "status",
         "date_created",
         "amount",

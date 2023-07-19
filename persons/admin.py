@@ -13,8 +13,9 @@ class ClientAdmin(admin.ModelAdmin):
         "last_name",
         "email",
         "phone",
+        "is_client",
     )
-    list_filter = ("sales_contact",)
+    list_filter = ("sales_contact", "is_client")
     search_fields = (
         "company_name",
         "last_name",
@@ -23,7 +24,14 @@ class ClientAdmin(admin.ModelAdmin):
 
 
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ("username", "first_name", "last_name", "email", "group_names")
+    list_display = (
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+        "group_names",
+        "is_staff",
+    )
     list_filter = ("groups",)
     search_fields = ("last_name",)
     ordering = ("last_name",)
